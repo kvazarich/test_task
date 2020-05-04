@@ -23,6 +23,7 @@ from test_task import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/human/', include('human_app.urls')),
+    path('api/match/', include('match_app.urls')),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += staticfiles_urlpatterns()

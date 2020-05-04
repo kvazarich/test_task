@@ -1,7 +1,7 @@
 from django.db import models
 from model_utils import Choices
 
-from test_task.signals import human_created, human_deleted
+from test_task.signals import human_post_save, human_pre_delete
 
 
 class Human(models.Model):
@@ -17,9 +17,13 @@ class Human(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        human_created.send(sender=self.__class__, pk=self.pk)
+        human_post_save.send(sender=self.__class__, pk=self.pk)
 
     def delete(self, *args, **kwargs):
         pk = self.pk
+        human_pre_delete.send(sender=self.__class__, pk=pk)
         super().save(*args, **kwargs)
-        human_deleted.send(sender=self.__class__, pk=pk)
+
+    class Meta:
+        db_table = 'Human'
+        managed = False
