@@ -11,3 +11,8 @@ class HumansViewSet(viewsets.ModelViewSet):
     parser_classes = (MultipartJsonParser, JSONParser)
     queryset = models.Human.objects.all()
     lookup_field = 'id'
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context.update({"request": self.request})
+        return context

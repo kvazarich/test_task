@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'human_app',
-    'match_app'
+    'match_app',
 ]
 
 MIDDLEWARE = [

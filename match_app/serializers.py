@@ -14,7 +14,7 @@ class ChoicesField(serializers.Field):
         return getattr(self._choices, data)
 
 
-class HumanSerializer(serializers.ModelSerializer):
+class HumanSerializer(serializers.HyperlinkedModelSerializer):
     gender = ChoicesField(choices=models.Human.GENDER)
     avatar = serializers.ImageField(use_url=True)
 
@@ -23,7 +23,7 @@ class HumanSerializer(serializers.ModelSerializer):
         fields = ['id', 'avatar', 'first_name', 'second_name', 'age', 'gender']
 
 
-class MatchSerializer(serializers.ModelSerializer):
+class MatchSerializer(serializers.HyperlinkedModelSerializer):
     gender = ChoicesField(choices=models.Human.GENDER)
     human = HumanSerializer(required=True)
 

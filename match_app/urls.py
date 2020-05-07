@@ -1,8 +1,13 @@
-from django.urls import path
+from django.conf.urls import url
+from django.urls import include
+from rest_framework import routers
 
 import match_app.views as views
 
+router = routers.DefaultRouter()
+
+router.register(r'', views.MatchViewSet, basename='MatchViewSet')
+
 urlpatterns = [
-    path('<int:pk>/', views.match_detail),
-    path('', views.match_list)
+    url(r'^', include(router.urls))
 ]

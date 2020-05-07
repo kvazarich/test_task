@@ -22,7 +22,7 @@ class Human(models.Model):
     def delete(self, *args, **kwargs):
         pk = self.pk
         human_pre_delete.send(sender=self.__class__, pk=pk)
-        super().save(*args, **kwargs)
+        super().delete(*args, **kwargs)
 
     class Meta:
         db_table = 'Human'

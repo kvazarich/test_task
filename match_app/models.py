@@ -6,7 +6,7 @@ from test_task.signals import human_post_save, human_pre_delete
 
 
 @receiver(human_post_save)
-def upsert_match(sender, pk, **kwargs):
+def save_match(sender, pk, **kwargs):
     human = Human.objects.get(pk=pk)
     match, _ = Match.objects.get_or_create(human=human)
     match.gender = human.gender
@@ -18,9 +18,17 @@ def upsert_match(sender, pk, **kwargs):
 
 @receiver(human_pre_delete)
 def delete_match(sender, pk, **kwargs):
-    human = Human.objects.get(pk=pk)
-    match, _ = Match.objects.get(human=human)
+    try:
+        human = Human.objects.get(pk=pk)
+    except Human.DoesNotExist:
+        return
+    match = Match.objects.get(human=human)
     match.delete()
+
+
+class ImageField(models.ImageField):
+    def value_to_string(self, obj):
+        return obj.fig.url
 
 
 class Human(models.Model):
@@ -28,7 +36,7 @@ class Human(models.Model):
         ('M', 'Male'),
         ('F', 'Female'),
     )
-    avatar = models.ImageField(upload_to='images')
+    avatar = ImageField(upload_to='images')
     first_name = models.CharField(max_length=200)
     second_name = models.CharField(max_length=200)
     age = models.CharField(max_length=200)

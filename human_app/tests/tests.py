@@ -7,8 +7,7 @@ from test_task.settings import BASE_DIR
 
 
 class HumanTestCase(APITestCase):
-    BASE_URL = '/api/match/'
-    HUMAN_URL = '/api/human/'
+    BASE_URL = '/api/human/'
     DEFAULT_DATA = {
             "first_name": "default_first_name",
             "second_name": "default_second_name",
@@ -25,7 +24,7 @@ class HumanTestCase(APITestCase):
                 'data': json.dumps(data)
             }
             response = self.client.post(
-                self.HUMAN_URL,
+                self.BASE_URL,
                 data=payload,
                 format='multipart'
             )
@@ -39,20 +38,11 @@ class HumanTestCase(APITestCase):
     def test_post(self):
         resp = self.post_default()
         self.assertEqual(resp.status_code, 201)
-        resp = self.client.post(self.BASE_URL, data=self.DEFAULT_DATA)
-        self.assertEqual(resp.status_code, 405)
 
     def test_get(self):
         resp = self.client.get(self.BASE_URL + '{}/'.format(self.first['id']))
         self.assertEqual(resp.status_code, 200)
-        expected = {
-            "first_name": "first",
-            "second_name": "default_second_name",
-            "age": "10",
-            "gender": "Male",
-            "human": self.first
-        }
-        self.assertEqual(resp.json(), expected)
+        self.assertEqual(resp.data, self.first)
 
     def test_put(self):
         data = self.DEFAULT_DATA.copy()
@@ -69,46 +59,28 @@ class HumanTestCase(APITestCase):
                 )
             }
             resp = self.client.put(
-                self.HUMAN_URL + '{}/'.format(self.first['id']),
+                self.BASE_URL + '{}/'.format(self.first['id']),
                 data=payload,
                 format='multipart'
             )
-        self.first.update({
-            "first_name": 'Non_Default_fn',
-            "age": '1235',
-            "gender": 'Female',
-        })
-        self.first.pop('avatar')
-        expected = {
-            "first_name": "first",
-            "second_name": "default_second_name",
-            "age": "10",
-            "gender": "Male",
-            "human": self.first
-        }
+        expected = self.first
         expected.update({
             "first_name": 'Non_Default_fn',
             "age": '1235',
             "gender": 'Female',
         })
+        expected.pop('avatar')
         self.assertEqual(resp.status_code, 200)
         resp = self.client.get(self.BASE_URL + '{}/'.format(self.first['id']))
-        json_ = resp.json()
-        json_['human'].pop('avatar')
-        self.assertEqual(expected, json_)
+        resp.data.pop('avatar')
+        self.assertEqual(expected, resp.data)
 
     def test_delete(self):
-        resp = self.client.delete(self.HUMAN_URL + '{}/'.format(self.first['id']))
+        resp = self.client.delete(self.BASE_URL + '{}/'.format(self.first['id']))
         self.assertEqual(resp.status_code, 204)
         resp = self.client.get(self.BASE_URL + '{}/'.format(self.first['id']))
         self.assertEqual(resp.status_code, 404)
-        resp = self.client.delete(self.BASE_URL + '{}/'.format(self.first['id']))
-        self.assertEqual(resp.status_code, 405)
 
     def test_list(self):
         resp = self.client.get(self.BASE_URL)
-        self.assertEqual(resp.status_code, 200)
-        f_resp = self.client.get(self.BASE_URL+ '{}/'.format(self.first['id']))
-        s_resp = self.client.get(self.BASE_URL+ '{}/'.format(self.second['id']))
-        expected = [f_resp.json(), s_resp.json()]
-        self.assertEqual(resp.json(), expected)
+        self.assertEqual(resp.data, [self.first, self.second])
