@@ -111,4 +111,4 @@ class HumanTestCase(APITestCase):
         f_resp = self.client.get(self.BASE_URL+ '{}/'.format(self.first['id']))
         s_resp = self.client.get(self.BASE_URL+ '{}/'.format(self.second['id']))
         expected = [f_resp.json(), s_resp.json()]
-        self.assertEqual(resp.json(), expected)
+        self.assertEqual(resp.data['results'], expected)

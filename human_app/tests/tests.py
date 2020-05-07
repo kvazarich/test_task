@@ -83,4 +83,4 @@ class HumanTestCase(APITestCase):
 
     def test_list(self):
         resp = self.client.get(self.BASE_URL)
-        self.assertEqual(resp.data, [self.first, self.second])
+        self.assertEqual(resp.data['results'], [self.first, self.second])
