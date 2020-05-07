@@ -5,6 +5,6 @@ import match_app.serializers as serializers
 
 
 class MatchViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = models.Match.objects.all()
+    queryset = models.Match.objects.all().order_by('human')
     serializer_class = serializers.MatchSerializer
 

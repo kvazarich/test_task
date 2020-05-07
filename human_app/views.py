@@ -9,6 +9,6 @@ from human_app.utils import MultipartJsonParser
 class HumansViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.HumanSerializer
     parser_classes = (MultipartJsonParser, JSONParser)
-    queryset = models.Human.objects.all()
+    queryset = models.Human.objects.all().order_by('id')
     lookup_field = 'id'
 
