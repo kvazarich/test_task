@@ -1,5 +1,5 @@
 Django==3.0.5
-djangorestframework==3.11.0
+djangorestframework==3.11.2
 django-model-utils==4.0.0
 Pillow==7.1.2
 Faker==4.0.3
